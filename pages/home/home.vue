@@ -1,5 +1,8 @@
 <template>
 	<view>
+		<view class="search-box">
+			<my-search @click="goToSearch"></my-search>
+		</view>
 		<swiper :indicator-dots="true" autoplay="true" :interval="3000" :duration="1000" :circular="true">
 			<swiper-item v-for="(item,index) in swiperList" :key="index">
 				<navigator class="swiper-item" :url="`/subpackage/goods_detail/goods_detail?goods_id=` + item.goods_id"><image :src="item.image_src"></image></navigator>
@@ -87,6 +90,14 @@
 					})
 				})
 				this.floorList = res.message
+			},
+			
+			
+			//跳转搜索页面
+			goToSearch() {
+				uni.navigateTo({
+					url: '/subpackage/search/search'
+				})
 			}
 			
 			
@@ -95,6 +106,12 @@
 </script>
 
 <style lang="scss">
+	.search-box {
+		position: sticky;
+		top: 0;
+		z-index: 999;
+	}
+	
 	swiper {
 		height: 330rpx;
 		.swiper-item, image {
