@@ -28,7 +28,31 @@
 </template>
 
 <script>
+	import {mapState,mapMutations,mapGetters} from 'vuex'
 	export default {
+		computed: {
+			...mapState('m_cart',[]),
+			...mapGetters('m_cart',['total'])
+		},
+		watch: {
+			// total(value) {
+			// 	const findResult = this.options.find(x => x.text === '购物车')
+			// 	if(findResult) {
+			// 		findResult.info = value
+			// 	}
+			// },
+			total: {
+				//handler属性用来定义侦听器function处理函数
+				handler(value) {
+					const findResult = this.options.find(x => x.text === '购物车')
+					if(findResult) {
+						findResult.info = value
+					}
+				},
+				//immediate属性用来声明此侦听器，是否在页面初次加载完毕后立即调用
+				immediate: true
+			}
+		},
 		data() {
 			return {
 				goods_info: [],
@@ -40,7 +64,7 @@
 				}, {
 					icon: 'cart',
 					text: '购物车',
-					info: 2
+					info: 0
 				}],
 				buttonGroup: [{
 						text: '加入购物车',
@@ -60,6 +84,9 @@
 			this.getGoodsInfo(goods_id)
 		},
 		methods: {
+			...mapMutations('m_cart',['addCart']),
+			
+			
 			async getGoodsInfo(goods_id) {
 				const {
 					data: res
@@ -90,7 +117,17 @@
 			},
 			buttonClick(e) {
 				console.log(e)
-
+				if(e.content.text === '加入购物车') {
+					const goods = {
+						goods_id: this.goods_info.goods_id,
+						goods_name: this.goods_info.goods_name,
+						goods_price: this.goods_info.goods_price,
+						goods_small_logo: this.goods_info.goods_small_logo,
+						goods_count: 1,
+						goods_state: true
+					}
+					this.addCart(goods)
+				}
 			}
 		}
 	}
@@ -129,7 +166,7 @@
 				flex-direction: column;
 				justify-content: center;
 				align-items: center;
-				width: 80rpx;
+				width: 120rpx;
 				padding: 0 10px;
 
 				text {
